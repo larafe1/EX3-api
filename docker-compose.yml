@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  exthree_pgdb:
+    image: postgres
+    container_name: exthree_pgdb
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=exthree
+    volumes:
+      - .:/usr/app
+
+volumes:
+  pgdata:
+    driver: local
