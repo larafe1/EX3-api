@@ -1,1 +1,2 @@
-export * from './DatabaseAuthenticationFactory';
+export * from './DatabaseUserAuthenticationFactory';
+export * from './DatabaseUserCreationFactory';

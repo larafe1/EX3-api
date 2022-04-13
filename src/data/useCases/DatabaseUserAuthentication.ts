@@ -2,7 +2,7 @@ import type { Encrypter, HashComparer } from '@/data/protocols/cryptography';
 import type { GetUserByUsernameRepository } from '@/data/protocols/database';
 import type { Authentication } from '@/domain/useCases';
 
-export class DatabaseAuthentication implements Authentication {
+export class DatabaseUserAuthentication implements Authentication {
   protected readonly getUserByUsernameRepository: GetUserByUsernameRepository;
   protected readonly hashComparer: HashComparer;
   protected readonly encrypter: Encrypter;
@@ -28,10 +28,7 @@ export class DatabaseAuthentication implements Authentication {
       );
       if (isValid) {
         const token = await this.encrypter.encrypt(userExists.id);
-        const user = {
-          ...userExists,
-          password: null
-        };
+        const user = (({ password, ...userExists }) => userExists)(userExists);
 
         return {
           token: token,

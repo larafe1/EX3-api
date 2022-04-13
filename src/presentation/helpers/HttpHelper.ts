@@ -1,4 +1,4 @@
-import { ForbiddenError, InternalServerError } from '@/presentation/errors';
+import { UnauthorizedError, InternalServerError } from '@/presentation/errors';
 import type { HttpResponse } from '@/presentation/protocols';
 
 export class HttpHelper {
@@ -7,9 +7,14 @@ export class HttpHelper {
     body: err
   });
 
-  static FORBIDDEN = (): HttpResponse<Error> => ({
+  static UNAUTHORIZED = (): HttpResponse<Error> => ({
     statusCode: 401,
-    body: new ForbiddenError()
+    body: new UnauthorizedError()
+  });
+
+  static FORBIDDEN = (err: Error): HttpResponse<Error> => ({
+    statusCode: 403,
+    body: err
   });
 
   static NOT_FOUND = (err: Error): HttpResponse<Error> => ({
