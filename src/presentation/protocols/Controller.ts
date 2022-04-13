@@ -1,7 +1,5 @@
-import type { HttpErrorResponse } from '@/presentation/errors';
-
-import type { HttpResponse } from './HttpResponse';
+import type { HttpResponse } from '@/presentation/protocols';
 
 export interface Controller<T = any> {
-  handle: (req: T) => Promise<HttpResponse<any | HttpErrorResponse>>;
+  handle: (req: T) => Promise<HttpResponse<T>>;
 }

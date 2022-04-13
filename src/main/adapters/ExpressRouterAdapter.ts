@@ -9,8 +9,14 @@ export const expressRouterAdapter = (controller: Controller) => {
       ...(req.params || {})
     };
 
-    const response = await controller.handle(request);
+    const httpResponse = await controller.handle(request);
 
-    res.status(response.statusCode).send(response);
+    if (httpResponse.statusCode >= 200 && httpResponse.statusCode <= 299) {
+      res.status(httpResponse.statusCode).json(httpResponse.body);
+    } else {
+      res.status(httpResponse.statusCode).json({
+        Error: httpResponse.message
+      });
+    }
   };
 };

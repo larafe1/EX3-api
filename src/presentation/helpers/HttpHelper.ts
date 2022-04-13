@@ -1,42 +1,26 @@
-import { HttpErrorResponse } from '@/presentation/errors';
+import { ForbiddenError, InternalServerError } from '@/presentation/errors';
 import type { HttpResponse } from '@/presentation/protocols';
 
 export class HttpHelper {
-  static BAD_REQUEST = (err: Error) =>
-    new HttpErrorResponse({
-      statusCode: 400,
-      error: {
-        name: 'Bad Request',
-        message: err.message
-      }
-    });
+  static BAD_REQUEST = (err: Error): HttpResponse<Error> => ({
+    statusCode: 400,
+    body: err
+  });
 
-  static FORBIDDEN = (err: Error) =>
-    new HttpErrorResponse({
-      statusCode: 401,
-      error: {
-        name: 'Forbidden',
-        message: err.message
-      }
-    });
+  static FORBIDDEN = (): HttpResponse<Error> => ({
+    statusCode: 401,
+    body: new ForbiddenError()
+  });
 
-  static NOT_FOUND = (err: Error) =>
-    new HttpErrorResponse({
-      statusCode: 404,
-      error: {
-        name: 'Not Found',
-        message: err.message
-      }
-    });
+  static NOT_FOUND = (err: Error): HttpResponse<Error> => ({
+    statusCode: 404,
+    body: err
+  });
 
-  static INTERNAL_SERVER_ERROR = (err: Error) =>
-    new HttpErrorResponse({
-      statusCode: 500,
-      error: {
-        name: 'Internal Server Error',
-        message: err.message
-      }
-    });
+  static INTERNAL_SERVER_ERROR = (err: Error): HttpResponse<Error> => ({
+    statusCode: 500,
+    body: new InternalServerError(err.stack!)
+  });
 
   static OK = <T>(data: T, message?: string): HttpResponse<T> => ({
     statusCode: 200,

@@ -1,1 +1,2 @@
-export * from './HttpErrorResponse';
+export * from './ForbiddenError';
+export * from './InternalServerError';
