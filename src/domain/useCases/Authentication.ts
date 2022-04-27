@@ -14,6 +14,6 @@ export namespace Authentication {
 
   export type Result = {
     token: string;
-    user: Omit<User, 'password'>;
+    user: Partial<User>;
   } | null;
 }

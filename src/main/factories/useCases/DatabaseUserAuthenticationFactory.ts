@@ -12,6 +12,7 @@ export const makeDatabaseAuthentication = () => {
   return new DatabaseUserAuthentication(
     userRepository,
     bcryptAdapter,
-    jwtAdapter
+    jwtAdapter,
+    userRepository
   );
 };

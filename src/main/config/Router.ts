@@ -1,9 +1,11 @@
 import { Router } from 'express';
 
-import { usersRoutes } from '@/main/routes';
+import { pingRoutes, usersRoutes, walletRoutes } from '@/main/routes';
 
 const router = Router();
 
+router.use(pingRoutes);
 router.use(usersRoutes);
+router.use(walletRoutes);
 
 export { router };

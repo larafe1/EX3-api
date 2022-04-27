@@ -8,12 +8,13 @@ datasource db {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  username   String
-  email      String
-  password   String
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now())
+  id           String   @id @default(uuid())
+  username     String
+  email        String
+  password     String
+  access_token String
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now())
 
 
   @@map("users")

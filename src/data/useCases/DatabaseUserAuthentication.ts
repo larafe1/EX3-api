@@ -1,20 +1,26 @@
 import type { Encrypter, HashComparer } from '@/data/protocols/cryptography';
-import type { GetUserByUsernameRepository } from '@/data/protocols/database';
+import type {
+  GetUserByUsernameRepository,
+  UpdateUserAccessTokenRepository
+} from '@/data/protocols/database';
 import type { Authentication } from '@/domain/useCases';
 
 export class DatabaseUserAuthentication implements Authentication {
   protected readonly getUserByUsernameRepository: GetUserByUsernameRepository;
   protected readonly hashComparer: HashComparer;
   protected readonly encrypter: Encrypter;
+  protected readonly updateUserAccessTokenRepository: UpdateUserAccessTokenRepository;
 
   constructor(
     getUserByUsernameRepository: GetUserByUsernameRepository,
     hashComparer: HashComparer,
-    encrypter: Encrypter
+    encrypter: Encrypter,
+    updateUserAccessTokenRepository: UpdateUserAccessTokenRepository
   ) {
     this.getUserByUsernameRepository = getUserByUsernameRepository;
     this.hashComparer = hashComparer;
     this.encrypter = encrypter;
+    this.updateUserAccessTokenRepository = updateUserAccessTokenRepository;
   }
 
   async auth(authenticationParams: Authentication.Params) {
@@ -28,11 +34,16 @@ export class DatabaseUserAuthentication implements Authentication {
       );
       if (isValid) {
         const token = await this.encrypter.encrypt(userExists.id);
-        const user = (({ password, ...userExists }) => userExists)(userExists);
+        await this.updateUserAccessTokenRepository.updateAccessToken({
+          id: userExists.id,
+          token
+        });
+        const user = (({ password, access_token, updated_at, ...rest }) =>
+          rest)(userExists);
 
         return {
           token: token,
-          user: user
+          user
         };
       }
     }

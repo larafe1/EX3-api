@@ -1,21 +1,25 @@
 import type {
   CreateUserRepository,
+  GetUserByUsernameRepository,
+  GetUserByAccessTokenRepository,
   GetAllUsersRepository,
-  GetUserByUsernameRepository
+  UpdateUserAccessTokenRepository
 } from '@/data/protocols/database';
 import { prismaClient } from '@/infra/database';
 
 export class UserRepository
   implements
     CreateUserRepository,
+    GetUserByUsernameRepository,
+    GetUserByAccessTokenRepository,
     GetAllUsersRepository,
-    GetUserByUsernameRepository
+    UpdateUserAccessTokenRepository
 {
   async create(data: CreateUserRepository.Params) {
     const userCollection = prismaClient.getConnection().user;
 
     const user = await userCollection.create({
-      data: data
+      data: { ...data, access_token: '' }
     });
 
     return user;
@@ -33,11 +37,39 @@ export class UserRepository
     return user;
   }
 
+  async getByAccessToken(token: GetUserByAccessTokenRepository.Params) {
+    const userCollection = prismaClient.getConnection().user;
+
+    const user = await userCollection.findFirst({
+      where: {
+        access_token: token
+      }
+    });
+
+    return user;
+  }
+
   async getAll() {
     const userCollection = prismaClient.getConnection().user;
 
     const allUsers = await userCollection.findMany();
 
     return allUsers;
+  }
+
+  async updateAccessToken({
+    id,
+    token
+  }: UpdateUserAccessTokenRepository.Params) {
+    const userCollection = prismaClient.getConnection().user;
+
+    await userCollection.update({
+      where: {
+        id: id
+      },
+      data: {
+        access_token: token
+      }
+    });
   }
 }
