@@ -18,7 +18,6 @@ export class DatabaseGetUserByAccessToken implements GetUserByAccessToken {
     let accessToken: string;
     try {
       accessToken = await this.decrypter.decrypt(token);
-      console.log(accessToken);
     } catch (err) {
       return null;
     }

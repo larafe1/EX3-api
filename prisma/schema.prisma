@@ -7,6 +7,51 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TransactionType {
+  buy
+  sell
+}
+
+model Transaction {
+  id     String          @id @default(uuid())
+  type   TransactionType
+  amount Int
+  value  Float
+  date   DateTime
+
+  stock_id String
+  stock    Stock  @relation(fields: [stock_id], references: [id])
+
+
+  @@map("transactions")
+}
+
+model Stock {
+  id                     String        @id @default(uuid())
+  symbol                 String
+  total_cost             Float
+  current_price          Float
+  fulfilled_transactions Transaction[]
+
+  wallet_id String
+  wallet    Wallet @relation(fields: [wallet_id], references: [id])
+
+
+  @@map("stocks")
+}
+
+model Wallet {
+  id              String  @id @default(uuid())
+  items           Stock[]
+  current_balance Float
+
+  user_id String @unique
+  user    User   @relation(fields: [user_id], references: [id])
+
+
+  @@map("wallets")
+}
+
 model User {
   id           String   @id @default(uuid())
   username     String
@@ -15,6 +60,8 @@ model User {
   access_token String
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now())
+
+  wallet Wallet?
 
 
   @@map("users")

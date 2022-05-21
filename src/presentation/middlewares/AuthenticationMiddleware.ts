@@ -15,7 +15,6 @@ export class AuthenticationMiddleware implements Middleware {
       const { token } = req;
       if (token) {
         const userExists = await this.getUserByAccessToken.get(token);
-        console.log(userExists);
         if (userExists) return HttpHelper.OK({ userId: userExists.id });
       }
       return HttpHelper.FORBIDDEN(new UnauthorizedError());

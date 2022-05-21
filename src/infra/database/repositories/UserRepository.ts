@@ -19,7 +19,15 @@ export class UserRepository
     const userCollection = prismaClient.getConnection().user;
 
     const user = await userCollection.create({
-      data: { ...data, access_token: '' }
+      data: {
+        ...data,
+        access_token: '',
+        wallet: {
+          create: {
+            current_balance: 0
+          }
+        }
+      }
     });
 
     return user;
