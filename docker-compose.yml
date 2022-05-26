@@ -6,13 +6,27 @@ services:
     container_name: exthree_pgdb
     restart: always
     ports:
-      - '5432:5432'
+      - 5432:5432
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=admin
       - POSTGRES_DB=exthree
     volumes:
       - .:/usr/app
+    expose:
+      - 5432
+
+  app:
+    build: .
+    container_name: exthree_app
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/app
+    links:
+      - exthree_pgdb
+    depends_on:
+      - exthree_pgdb
 
 volumes:
   pgdata:
