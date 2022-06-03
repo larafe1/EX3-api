@@ -1,5 +1,8 @@
 import type { Authentication, CreateUser } from '@/domain/useCases';
-import { UsernameInUseError } from '@/presentation/errors';
+import {
+  MissingParametersError,
+  InvalidParametersError
+} from '@/presentation/errors';
 import { HttpHelper } from '@/presentation/helpers';
 import type { Controller } from '@/presentation/protocols';
 
@@ -17,16 +20,19 @@ export class SignUpController implements Controller {
       const { username, email, password } = req;
       const validatedWithoutErrors = !!username && !!email && !!password;
       if (!validatedWithoutErrors)
-        return HttpHelper.BAD_REQUEST({
-          message: 'Missing required params'
-        } as Error);
+        return HttpHelper.BAD_REQUEST(new MissingParametersError());
 
       const isValid = await this.createUser.create({
         username,
         email,
         password
       });
-      if (!isValid) return HttpHelper.FORBIDDEN(new UsernameInUseError());
+      if (!isValid)
+        return HttpHelper.FORBIDDEN(
+          new InvalidParametersError(
+            'Provided an username that is already in use'
+          )
+        );
 
       const authenticationModel = await this.authentication.auth({
         username,

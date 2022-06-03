@@ -1,6 +1,6 @@
 export class InvalidParametersError extends Error {
-  constructor() {
-    super('One or more invalid parameters was given');
+  constructor(message: string) {
+    super(message);
     this.name = 'InvalidParametersError';
   }
 }

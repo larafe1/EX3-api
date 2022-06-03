@@ -1,19 +1,21 @@
-FROM node
+FROM node:16
 
-WORKDIR /usr/app
+WORKDIR /app
 
-COPY package*.json ./
+COPY package.json ./
 
 COPY prisma ./prisma/
 
 COPY .env ./
 
-RUN npm install
+COPY tsconfig.json ./
 
-RUN npx prisma generate
+RUN npm install
 
 COPY . .
 
+RUN npx prisma generate
+
 EXPOSE 8080
 
-CMD ["npm", "run", "dev"]
+CMD ["npm",  "run", "dev"]

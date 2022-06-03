@@ -1,5 +1,5 @@
 import type { Authentication } from '@/domain/useCases';
-import { InvalidParametersError } from '@/presentation/errors';
+import { MissingParametersError } from '@/presentation/errors';
 import { HttpHelper } from '@/presentation/helpers';
 import type { Controller } from '@/presentation/protocols';
 
@@ -15,7 +15,7 @@ export class SignInController implements Controller {
       const { username, password } = req;
       const validatedWithoutErrors = !!username && !!password;
       if (!validatedWithoutErrors)
-        return HttpHelper.BAD_REQUEST(new InvalidParametersError());
+        return HttpHelper.BAD_REQUEST(new MissingParametersError());
 
       const authenticationModel = await this.authentication.auth(req);
       if (!authenticationModel) return HttpHelper.UNAUTHORIZED();
